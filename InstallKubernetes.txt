@@ -72,5 +72,6 @@ Check status from control plane:
 NAME         STATUS   ROLES    AGE   VERSION
 <hostname>   Ready    master   15m   v1.18.3
 <hostname>   Ready    <none>   67s   v1.18.3
-
 You noticed Roles for worker node is <none>, then explore more at https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/
+
+
