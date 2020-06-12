@@ -92,7 +92,7 @@ W0609 15:24:27.470091    3609 manifests.go:225] the default kube-apiserver autho
 [kubelet] Creating a ConfigMap "kubelet-config-1.18" in namespace kube-system with the configuration for the kubelets in the cluster
 [upload-certs] Skipping phase. Please see --upload-certs
 [mark-control-plane] Marking the node <hostname> as control-plane by adding the label "node-role.kubernetes.io/master=''"
-[mark-control-plane] Marking the node usg-dt-mysql03.wdc.com as control-plane by adding the taints [node-role.kubernetes.io/master:NoSchedule]
+[mark-control-plane] Marking the node <hostname> as control-plane by adding the taints [node-role.kubernetes.io/master:NoSchedule]
 [bootstrap-token] Using token: 2folj8.j7pq6glnjuy71ch7
 [bootstrap-token] Configuring bootstrap tokens, cluster-info ConfigMap, RBAC Roles
 [bootstrap-token] configured RBAC rules to allow Node Bootstrap tokens to get nodes
