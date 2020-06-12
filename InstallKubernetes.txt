@@ -1,6 +1,5 @@
-Install Kubernetes Control Plane (master) and Worker Node:
-
-Pr-requisite for Kubernetes Control Plane and Worker Nodes / minion:
+__Install Kubernetes Control Plane (master) and Worker Node:__
+**Pr-requisite for Kubernetes Control Plane and Worker Nodes / minion:**
 Disable selinux:
 Edit /etc/selinux/config file, and set SELINUX-disabled as follows, and bounce the server.
 SELINUX=disabled
