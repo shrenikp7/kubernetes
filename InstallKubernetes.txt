@@ -1,4 +1,4 @@
-_Install Kubernetes Control Plane (master) and Worker Node:_
+Install Kubernetes Control Plane (master) and Worker Node:
 
 Pr-requisite for Kubernetes Control Plane and Worker Nodes / minion:
 Disable selinux:
