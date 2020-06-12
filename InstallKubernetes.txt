@@ -1,23 +1,28 @@
 Install Kubernetes Control Plane (master) and Worker Node:
-**Pr-requisite for Kubernetes Control Plane and Worker Nodes / minion:**
+Pre-requisite for Kubernetes Control Plane and Worker Nodes / minion:
+
 Disable selinux:
 Edit /etc/selinux/config file, and set SELINUX-disabled as follows, and bounce the server.
 SELINUX=disabled
 #getenfoce
 Disabled
+
 Disable firewall:
 #systemctl stop firewalld
 #systemctl disable firewalld
 #stystemctl status firewalld
 Active: inactive (dead)
+
 Set bridge-nf-call-iptables contents:
 echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
 Oterwise you will get following error
 [ERROR FileContent--proc-sys-net-bridge-bridge-nf-call-iptables]: /proc/sys/net/bridge/bridge-nf-call-iptables contents are not set to 1
+
 Disable swap:
 #swapoff -a
 Otherwise you will get following error
 [ERROR Swap]: running with swap on is not supported. Please disable swap
+
 Configure Repository on control plane and worker node:
 Execute following command to create file /etc/repos.d/kubernetes.repo and add content for kubernetes, which will help to
 set name, base URL, enable, gpgcheck (check for package signature), gpgkey, download kubernetes from Google cloud repository
@@ -32,45 +37,138 @@ cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 > gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
 > https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 > EOF
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Install Kubernetes and Docker container  on control plane and worker node:
 # yum install kubeadm docker -y
 Start kubelet and enable kubelet on control plane and worker node:
 # systemctl  restart kubelet && systemctl enable kubelet
 Start Docker and Enable Docker on control plane and worker node:
 systemctl restart docker && systemctl enable docker
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Initialize cluster on control-plane:
+
 # kubeadm init
-Following messages will be displayed on control-plane
+W0609 15:24:00.132637 3609 configset.go:202] WARNING: kubeadm cannot validate component configs for API groups [kubelet.config.k8s.io kubeproxy.config.k8s.io]
+[init] Using Kubernetes version: v1.18.3
+[preflight] Running pre-flight checks
+[WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
+[preflight] Pulling images required for setting up a Kubernetes cluster
+[preflight] This might take a minute or two, depending on the speed of your internet connection
+[preflight] You can also perform this action in beforehand using 'kubeadm config images pull'
+[kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
+[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+[kubelet-start] Starting the kubelet
+[certs] Using certificateDir folder "/etc/kubernetes/pki"
+[certs] Generating "ca" certificate and key
+[certs] Generating "apiserver" certificate and key
+[certs] apiserver serving cert is signed for DNS names [<hostname> kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local] and IPs [10.96.0.1 <host_ip_address>]
+[certs] Generating "apiserver-kubelet-client" certificate and key
+[certs] Generating "front-proxy-ca" certificate and key
+[certs] Generating "front-proxy-client" certificate and key
+[certs] Generating "etcd/ca" certificate and key
+[certs] Generating "etcd/server" certificate and key
+[certs] etcd/server serving cert is signed for DNS names [<hostname> localhost] and IPs [<host_ip_address> 127.0.0.1 ::1]
+[certs] Generating "etcd/peer" certificate and key
+[certs] etcd/peer serving cert is signed for DNS names [<hostname> localhost] and IPs [<host_ip_address> 127.0.0.1 ::1]
+[certs] Generating "etcd/healthcheck-client" certificate and key
+[certs] Generating "apiserver-etcd-client" certificate and key
+[certs] Generating "sa" key and public key
+[kubeconfig] Using kubeconfig folder "/etc/kubernetes"
+[kubeconfig] Writing "admin.conf" kubeconfig file
+[kubeconfig] Writing "kubelet.conf" kubeconfig file
+[kubeconfig] Writing "controller-manager.conf" kubeconfig file
+[kubeconfig] Writing "scheduler.conf" kubeconfig file
+[control-plane] Using manifest folder "/etc/kubernetes/manifests"
+[control-plane] Creating static Pod manifest for "kube-apiserver"
+[control-plane] Creating static Pod manifest for "kube-controller-manager"
+W0609 15:24:27.469148    3609 manifests.go:225] the default kube-apiserver authorization-mode is "Node,RBAC"; using "Node,RBAC"
+[control-plane] Creating static Pod manifest for "kube-scheduler"
+W0609 15:24:27.470091    3609 manifests.go:225] the default kube-apiserver authorization-mode is "Node,RBAC"; using "Node,RBAC"
+[etcd] Creating static Pod manifest for local etcd in "/etc/kubernetes/manifests"
+[wait-control-plane] Waiting for the kubelet to boot up the control plane as static Pods from directory "/etc/kubernetes/manifests". This can take up to 4m0s
+[apiclient] All control plane components are healthy after 23.002400 seconds
+[upload-config] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
+[kubelet] Creating a ConfigMap "kubelet-config-1.18" in namespace kube-system with the configuration for the kubelets in the cluster
+[upload-certs] Skipping phase. Please see --upload-certs
+[mark-control-plane] Marking the node <hostname> as control-plane by adding the label "node-role.kubernetes.io/master=''"
+[mark-control-plane] Marking the node usg-dt-mysql03.wdc.com as control-plane by adding the taints [node-role.kubernetes.io/master:NoSchedule]
+[bootstrap-token] Using token: 2folj8.j7pq6glnjuy71ch7
+[bootstrap-token] Configuring bootstrap tokens, cluster-info ConfigMap, RBAC Roles
+[bootstrap-token] configured RBAC rules to allow Node Bootstrap tokens to get nodes
+[bootstrap-token] configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
+[bootstrap-token] configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
+[bootstrap-token] configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
+[bootstrap-token] Creating the "cluster-info" ConfigMap in the "kube-public" namespace
+[kubelet-finalize] Updating "/etc/kubernetes/kubelet.conf" to point to a rotatable kubelet client certificate and key
+[addons] Applied essential addon: CoreDNS
+[addons] Applied essential addon: kube-proxy
+
 Your Kubernetes control-plane has initialized successfully!
-To start using your cluster, we need to run the following as a regular user:
+
+To start using your cluster, you need to run the following as a regular user:
+
   mkdir -p $HOME/.kube
   sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
   sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+  Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 10.86.66.21:6443 --token 2folj8.j7pq6glnjuy71ch7 \
+    --discovery-token-ca-cert-hash sha256:713838b7e8a604030b355dd3afcd5d5d6a7ffca466c3cbd8b911738f02712865
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Execute following command on Control Plane:
 I have decided to use cluster using root, so I had execute following command as root user.
 # mkdir -p $HOME/.kube
 # sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 # sudo chown $(id -u):$(id -g) $HOME/.kube/config
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Execute following command to deploy network:
+# export kubever=$(kubectl version | base64 | tr -d '\n')
+# kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
+serviceaccount/weave-net created
+clusterrole.rbac.authorization.k8s.io/weave-net created
+clusterrolebinding.rbac.authorization.k8s.io/weave-net created
+role.rbac.authorization.k8s.io/weave-net created
+rolebinding.rbac.authorization.k8s.io/weave-net created
+daemonset.apps/weave-net created
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Join Worker Node:
 Do you remember while intializing kubernetes cluster on control plane / master you got following message. It is about to join worker node with control plane
 
 Then you can join any number of worker nodes by running the following on each as root:
 kubeadm join <ip-address>:6443 --token 2folj8.j7pq6glnjuy71ch7 \
     --discovery-token-ca-cert-hash sha256:713838b7e8a604030b355dd3afcd5d5d6a7ffca466c3cbd8b911738f02712865
-Execute following command on worker node / minion
-# kubeadm join <ip-address>:6443 --token 2folj8.j7pq6glnjuy71ch7 \
-    --discovery-token-ca-cert-hash sha256:713838b7e8a604030b355dd3afcd5d5d6a7ffca466c3cbd8b911738f02712865
 
-We can expect following message once worker node join control plane.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Execute following command on worker node / minion:
+# kubeadm join <Master_Node_IP_Address>:6443 --token 2folj8.j7pq6glnjuy71ch7 --discovery-token-ca-cert-hash sha256:713838b7e8a604030b355dd3afcd5d5d6a7ffca466c3cbd8b911738f02712865
+W0609 15:38:50.176527 14028 join.go:346] [preflight] WARNING: JoinControlPane.controlPlane settings will be ignored when control-plane flag is not set.
+[preflight] Running pre-flight checks
+[WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
+[preflight] Reading configuration from the cluster...
+[preflight] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
+[kubelet-start] Downloading configuration for the kubelet from the "kubelet-config-1.18" ConfigMap in the kube-system namespace
+[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+[kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
+[kubelet-start] Starting the kubelet
+[kubelet-start] Waiting for the kubelet to perform the TLS Bootstrap...
 
 This node has joined the cluster:
 * Certificate signing request was sent to apiserver and a response was received.
 * The Kubelet was informed of the new secure connection details.
+
+Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
 Check status from control plane:
 # kubectl get nodes
-NAME         STATUS   ROLES    AGE   VERSION
-<hostname>   Ready    master   15m   v1.18.3
-<hostname>   Ready    <none>   67s   v1.18.3
+NAME                STATUS   ROLES    AGE   VERSION
+<Master_hostname>   Ready    master   15m   v1.18.3
+<Node_host_name>    Ready    <none>   67s   v1.18.3
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 You noticed Roles for worker node is <none>, then explore more at https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/
-
-
