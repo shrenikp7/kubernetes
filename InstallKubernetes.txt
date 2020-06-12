@@ -169,6 +169,8 @@ NAME                STATUS   ROLES    AGE   VERSION
 <Master_hostname>   Ready    master   15m   v1.18.3
 <Node_host_name>    Ready    <none>   67s   v1.18.3
 
+You noticed Roles for worker node is <none>, then explore more at https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-You noticed Roles for worker node is <none>, then explore more at https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/
+Explore K8s master high availability  - https://github.com/kubernetes/kubeadm/blob/master/docs/ha-considerations.md#options-for-software-load-balancing
